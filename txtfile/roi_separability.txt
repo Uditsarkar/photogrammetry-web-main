@@ -1,0 +1,32 @@
+Input File: ortho.tif  
+    ROI Name: (Jeffries-Matusita, Transformed Divergence)  
+  
+Built-up [Red] 3392 points:  
+    Vegetation [Green] 3719 points: (1.55179260 1.72434417)  
+    Bareland [Yellow] 3238 points: (1.52704593 1.96291496)  
+    Water [Blue] 2768 points: (1.93367692 2.00000000)  
+  
+Vegetation [Green] 3719 points:  
+    Built-up [Red] 3392 points: (1.55179260 1.72434417)  
+    Bareland [Yellow] 3238 points: (1.84835622 1.99602987)  
+    Water [Blue] 2768 points: (1.66308133 2.00000000)  
+  
+Bareland [Yellow] 3238 points:  
+    Built-up [Red] 3392 points: (1.52704593 1.96291496)  
+    Vegetation [Green] 3719 points: (1.84835622 1.99602987)  
+    Water [Blue] 2768 points: (1.99064200 1.99994129)  
+  
+Water [Blue] 2768 points:  
+    Built-up [Red] 3392 points: (1.93367692 2.00000000)  
+    Vegetation [Green] 3719 points: (1.66308133 2.00000000)  
+    Bareland [Yellow] 3238 points: (1.99064200 1.99994129)  
+  
+Pair Separation (least to most);  
+  
+Built-up [Red] 3392 points and Bareland [Yellow] 3238 points - 1.52704593  
+Built-up [Red] 3392 points and Vegetation [Green] 3719 points - 1.55179260  
+Vegetation [Green] 3719 points and Water [Blue] 2768 points - 1.66308133  
+Vegetation [Green] 3719 points and Bareland [Yellow] 3238 points - 1.84835622  
+Built-up [Red] 3392 points and Water [Blue] 2768 points - 1.93367692  
+Bareland [Yellow] 3238 points and Water [Blue] 2768 points - 1.99064200  
+

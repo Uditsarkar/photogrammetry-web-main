@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Unveiling Land Cover of Enschede with ML</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins" type="text/css" />
+        <!-- JS CDN -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+        <link rel="stylesheet" href="styles/main.css" type="text/css">
+        <!-- ol lib -->
+        <link rel="stylesheet" href="https://gisedu.itc.utwente.nl/exercise/libraries/openlayers/v4.6.4/ol.css" type="text/css" />
+        <script src="https://gisedu.itc.utwente.nl/exercise/libraries/openlayers/v4.6.4/ol.js"></script>
+        <!-- ol layer switcher-->
+        <link rel="stylesheet" href="https://unpkg.com/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.css" />
+        <script src="https://unpkg.com/ol-layerswitcher@4.1.1"></script>
+        <!-- ol-ext -->
+        <link rel="stylesheet" href="https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.css" />
+        <script type="text/javascript" src="https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.js"></script>
+        <!-- d3 lib -->
+        <script src="https://unpkg.com/d3@5.9.1/dist/d3.min.js"></script>
+        <script src="https://unpkg.com/scrollama"></script>
+        <!-- proj -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.3/proj4.js"></script>
+        <script src="https://epsg.io/28992.js"></script>
+        <!-- shapefile to geojson -->
+        <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"></script>
+        <script src="https://unpkg.com/shapefile@0.6"></script>
+    </head>
+    <body onload="init()">
+        <nav class="navbar navbar-expand-md fixed-top bg-dark" data-bs-theme="dark" id="main-navbar">
+            <!-- Navbar content -->
+            <!-- justify-content-end need to be used with flex body like container-fluid -->
+            <div class="container-fluid">
+                <span class="navbar-brand mb-0 ms-2 h1" style="color: #ffc164;">GroupFive</span>
+                <!-- toggler icon in case of small window -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarToggler">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active main-menu first-page" aria-current="page" id="home">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link main-menu intro-page" id="intro">Introduction</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link main-menu web-arch-page" id="web-arch">Web Architecture</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link main-menu tools-page" id="tools">Tools</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link main-menu flowchart-page" id="workflow">Workflow</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link main-menu map-page" id="map">Product</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link main-menu aboutus-page" id="aboutus">About us</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- First page -->
+        <div class="container-fluid main-content" id="first-page">
+            <p class="text-center heading-home">
+                <b>Enschede's Landscape: Unveiling Land Cover with Machine Learning</b>
+            </p>
+            <p class="text-center normal-text mt-0 mb-5">Classifying Enschede's Land Cover using SVM and MLC</p>
+            <p class="text-center img-caption mb-2">(scroll down to explore)</p>
+            <div class="scroll"></div>
+        </div>
+        <!-- Introduction page -->
+        <div class="main-content" id="intro-page">
+            <div class="container-fluid scroll-content">
+                <div class="row justify-content-center">
+                        <p class="text-center heading"><b>What is this website about ?</b></p>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-sm-8 d-flex justify-content-center">
+                        <p class="normal-text">
+                            This website presents an analysis of land cover in Enschede, Netherlands. 
+                            We <mark>classified an aerial ortho image of the city using two machine learning algorithms: Maximum Likelihood Classifier (MLC) and Support Vector Machine (SVM)</mark>. 
+                            We then assessed the accuracy of each classification and compared it to the existing official land cover product, LGN. 
+                            This comparison allows us to evaluate the effectiveness of our classification methods and determine which algorithm provides the most accurate representation of Enschede's land cover.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Web architecture page -->
+        <div class="main-content" id="web-arch-page">
+            <div class="container-fluid scroll-content overflow-x-auto overflow-y-auto">
+                <div class="row justify-content-center">
+                    <p class="text-center heading">Web architecture</p>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-8 d-flex justify-content-center align-items-center">
+                        <img id="web-arch-img" src="images/web_architecture_new.png">
+                    </div>
+                    <div class="col-md-4">
+                        <p class="normal-text text-start" style="margin: 10px;"><span class="span-highlight-text">Web services</span></p>
+                        <p class="normal-text-small">
+                            We use Open Web Services (OWS), e.g. WMS and WFS, which embraces OGC standards. In this project, we only use <mark>WMS (Web Map Service)</mark> 
+                            to provide a capability for requesting land cover classification map images (support PNG and JPEG format) by leveraging MapServer.
+                        </p>
+                    </div>
+                </div>
+                <!--<div class="row justify-content-center">
+                    <p class="normal-text">Random text</p>
+                </div>-->
+            </div>
+        </div>
+        <!-- Tools page -->
+        <div class="main-content" id="tools-page">
+            <div class="container-fluid scroll-content overflow-x-auto overflow-y-auto">
+                <div class="row justify-content-center">
+                    <p class="text-center heading">Tools</p>
+                </div>
+                <div class="container-fluid text-center">
+                    <!-- <div class="vl"></div> -->
+                    <div class="row justify-content-center">
+                        <div class="col-sm justify-content-center">
+                            <div class="row justify-content-center">
+                                <p class="normal-text no-margin-text"><b>Website</b></p>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col-sm">
+                                    <figure>
+                                        <figcaption class="img-caption">HTML</figcaption>
+                                        <img class="logo-img" src="images/html.png">
+                                    </figure>
+                                    <figure>
+                                        <figcaption class="img-caption">CSS</figcaption>
+                                        <img class="logo-img" src="images/css.png">
+                                    </figure>
+                                    <figure>
+                                        <figcaption class="img-caption">JS</figcaption>
+                                        <img class="logo-img" src="images/js.png">
+                                    </figure>
+                                    <figure>
+                                        <figcaption class="img-caption">Bootstrap</figcaption>
+                                        <img class="logo-img" src="images/bootstrap.png">
+                                    </figure>
+                                </div>
+                            </div>
+                            <div class="row px-5">
+                                <p class="normal-text-small">We use HTML, CSS, Javascript, and Bootstrap to develop this website.</p>
+                            </div>
+                        </div>
+                        <div class="col-sm justify-content-center">
+                            <div class="row justify-content-center">
+                                <p class="normal-text no-margin-text"><b>Photogrammetric product</b></p>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col-sm">
+                                    <figure>
+                                        <figcaption class="img-caption">ENVI</figcaption>
+                                        <img class="logo-img" src="images/envi.png">
+                                    </figure>
+                                    <figure>
+                                        <figcaption class="img-caption">QGIS</figcaption>
+                                        <img class="logo-img" src="images/qgis.png">
+                                    </figure>
+                                    <figure>
+                                        <figcaption class="img-caption">ArcGIS Pro</figcaption>
+                                        <img class="logo-img" src="images/arcgis_pro.png">
+                                    </figure>
+                                </div>
+                            </div>
+                            <div class="row px-5">
+                                <p class="normal-text-small">To produce Photogrammetric product (Land cover classification), we use <mark>ENVI</mark> to do the classification since the tool is taught in this course and we are more familiar with. 
+                                    <mark>ArcGIS Pro</mark> was used to re-classify the existing land use classification product and <mark>QGIS</mark> is used to compress rasters and assign CRS to rasters.
+                                </p>
+                                <p class="normal-text-small">
+                                    The <mark>reason that we use tools separately</mark> even all the tasks can be done within one software is we divide the task to each others and everyone has different preference and proficient in different softwares.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Flow chart -->
+        <div class="main-content" id="flowchart-page">
+            <div class="container-fluid scroll-content overflow-x-auto overflow-y-auto">
+                <div class="row justify-content-center">
+                    <p class="text-center heading">Workflow</p>
+                </div>
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-sm-5 justify-content-center" id="wf-button-group">
+                        <div class="row justify-content-center">
+                            <button class="btn btn-rectangle" type="submit" id="collect-explore-btn">Collect and Explore data</button>
+                        </div>
+                        <div class="row justify-content-center">
+                            <button class="btn btn-rectangle" type="submit" id="train-test-btn">Collect training and testing set</button>
+                        </div>
+                        <div class="row justify-content-center">
+                            <button class="btn btn-rectangle" type="submit" id="classification-btn">Classification</button>
+                        </div>
+                        <div class="row justify-content-center">
+                            <button class="btn btn-rectangle" type="submit" id="output-btn">Output Product</button>
+                        </div>
+                        <div class="row justify-content-center">
+                            <button class="btn btn-rectangle" type="submit" id="acc-btn">Accuracy assessment</button>
+                        </div>
+                        <div class="row justify-content-center">
+                            <button class="btn btn-rectangle" type="submit" id="uncertainty-btn">Uncertainty in our product</button>
+                        </div>
+                    </div>
+                    <div class="col-sm-7 d-flex justify-content-center">
+                        <figure style="background-image: url(images/flowchart.svg);" onmousemove="zoom(event)" class="workflow-fig">
+                            <img src="images/flowchart.svg" id="workflow-img">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Collect and explore data page -->
+        <div class="main-content" id="explore-data-page">
+            <div class="container-fluid scroll-content overflow-x-auto overflow-y-auto">
+                <div class="row justify-content-center">
+                    <p class="text-center heading">Collect and explore data</p>
+                </div>
+                <div class="row justify-content-evenly">
+                    <div class="col-sm-5">
+                        <div class="row justify-content-center">
+                            <p class="text-center normal-text"><b>Orthophoto</b></p>
+                        </div>
+                        <div class="row justify-content-center">
+                            <ul class="normal-text-small">
+                                <li class="li-highlight">
+                                    <span class="span-highlight-text">Description</span>: The foundation of our land cover analysis for Enschede is a high-resolution orthophoto. This orthophoto was generated from digital airborne images captured by an UltraCamD, a large format camera known for its exceptional detail. 
+                                    The camera boasts a focal length of 105.2 millimeters and utilizes pixels measuring only 9 microns each. 
+                                </li>
+                                <li class="li-highlight">
+                                    <span class="span-highlight-text">Year</span>: 2008
+                                </li>
+                                <li class="li-highlight">
+                                    <span class="span-highlight-text">Extent</span>: The minimum X coordinate is 256,583.20 meters, the minimum Y coordinate is 470,627.60 meters, the maximum X coordinate is 258,097.10 meters, and the maximum Y coordinate is 471,960 meters. 
+                                </li>
+                            </ul>
+                            <!--<p class="text-center normal-text-small" style="line-height: 160%;">
+                                The foundation of our land cover analysis for Enschede is a high-resolution orthophoto. This orthophoto was generated from digital airborne images captured by an UltraCamD, a large format camera known for its exceptional detail. 
+                                The camera boasts a focal length of 105.2 millimeters and utilizes pixels measuring only 9 microns each. 
+                                The orthophoto covers a significant portion of Enschede, encompassing an area of approximately 2,017,574.53 square meters. 
+                                The minimum X coordinate is 256,583.20 meters, the minimum Y coordinate is 470,627.60 meters, the maximum X coordinate is 258,097.10 meters, and the maximum Y coordinate is 471,960 meters. 
+                                This detailed coverage allows for a comprehensive analysis of land cover within the captured area.
+                            </p>-->
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="row justify-content-center">
+                            <p class="text-center normal-text"><b>LGN</b></p>
+                        </div>
+                        <div class="row justify-content-center">
+                            <ul class="normal-text-small">
+                                <li class="li-highlight">
+                                    <span class="span-highlight-text">Description</span>: The National Land Use File of the Netherlands (LGN) is a nationwide database and provides the user with up-to-date and accurate information about land use in the Netherlands.
+                                    The LGN is created with the aim of providing ministries, provinces, water boards and other regional/national organisations with up-to-date information on land use and land use changes over time. 
+                                </li>
+                                <li class="li-highlight">
+                                    <span class="span-highlight-text">Year</span>: 2018 (the closest year to orthophoto that we can find)
+                                </li>
+                                <li class="li-highlight">
+                                    <span class="span-highlight-text">Spatial resolution</span>: 5 meters
+                                </li>
+                                <li class="li-highlight">
+                                    <span class="span-highlight-text">Land use classes</span>: 51 classes (divided between agriculture, forest, water, nature, urban area)
+                                </li>
+                                <li class="li-highlight">
+                                    <span class="span-highlight-text">Extent</span>: By clipping the raster, we also get the same extent as orthophoto.
+                                </li>
+                            </ul>
+                            <!--<p class="text-center normal-text-small" style="line-height: 160%;">
+                                The National Land Use File of the Netherlands (LGN) is a nationwide database and provides the user with up-to-date and accurate information about land use in the Netherlands. 
+                                The database is based on a combination of geodata, in which satellite data is an important source of information.
+                                The LGN is created with the aim of providing ministries, provinces, water boards and other regional/national organisations with up-to-date information on land use and land use changes over time. 
+                                It contains the land use for 51 classes (divided between agriculture, forest, water, nature, urban area) with a spatial resolution of 5m. In doing so, it provides the user with up-to-date and accurate information about land use in the Netherlands.
+                            </p>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <p class="normal-text-small text-center">
+                        * The <mark>reason that we used LGN product to compare with classification product from orthophoto</mark> is we can't find classification product that has high spatial resolution
+                        as orthophoto and LGN is the highest spatial resolution classification product that we can find. Unfortunately, the LGN product is only available from year 2018.  
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- Collect training and testing data page -->
+        <div class="main-content" id="train-test-data-page">
+            <div class="container-fluid scroll-content overflow-x-auto overflow-y-auto">
+                <div class="row justify-content-center">
+                    <p class="text-center heading">Collect training and testing set</p>
+                </div>
+                <div class="row justify-content-center px-5">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active normal-text" id="train-tab" data-bs-toggle="tab" data-bs-target="#train-set" type="button" role="tab" aria-controls="Training set" aria-selected="true">Training set</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link normal-text" id="test-tab" data-bs-toggle="tab" data-bs-target="#test-set" type="button" role="tab" aria-controls="Test set" aria-selected="false">Test set</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="train-set" role="tabpanel" aria-labelledby="train-tab">
+                            <div class="row justify-content-center">
+                                <div class="col-sm justify-content-center">
+                                    <p class="normal-text-small">We collect the training set for <span class="span-highlight-text">4 classes</span>:</p>
+                                    <ul class="normal-text-small">
+                                        <li>Built-up</li>
+                                        <li>Vegetation</li>
+                                        <li>Water</li>
+                                        <li>Bare land</li>
+                                    </ul>
+                                    <p class="normal-text-small">We collect around 3500 pixels for each class and we try to balance training set of each class.</p>
+                                    <!-- Button trigger modal -->
+                                    <div class="row">
+                                        <div class="col-sm d-flex justify-content-center mb-3">
+                                            <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#roi-mean-modal">
+                                                ROI mean
+                                            </button>
+                                        </div>
+                                        <div class="col-sm d-flex mb-3">
+                                            <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#roi-std-modal">
+                                                ROI standard deviation
+                                            </button>
+                                        </div>
+                                        <div class="col-sm d-flex mb-3">
+                                            <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#roi-nd-viz-modal">
+                                                Feature space of all classes
+                                            </button>
+                                        </div>
+                                        <div class="col-sm d-flex mb-3">
+                                            <a href="https://gisedu.itc.utwente.nl/student/s3234223/project/txtfile/roi_separability.txt" rel="noopener noreferrer" target="_blank" class="btn btn-primary mx-1 align-content-center">
+                                                ROI Separability
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <p class="img-caption">
+
+                                    </p>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="roi-mean-modal" tabindex="-1" aria-labelledby="roi-mean-modal" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="roi-mean">ROI mean for all 3 bands</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <img src="images/mean.jpg" class="img-fluid">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="roi-std-modal" tabindex="-1" aria-labelledby="roi-std-modal" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="roi-std">ROI standard deviation for all 3 bands (R,G,B)</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <img src="images/stdev.jpg" class="img-fluid">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="roi-nd-viz-modal" tabindex="-1" aria-labelledby="roi-nd-viz-modal" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="roi-nd-viz">Feature space of all classes (3 bands - R,G,B)</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <!--<img style="height: 100%; width: 100%;" src="images/nd_viz.jpg">-->
+                                                    <video width="100%" height="100%" controls>
+                                                        <source src="video/nd_viz.mp4" type="video/mp4">
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm px-5">
+                                    <div class="row justify-content-center">
+                                        <div id="train-map"></div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <p class="img-caption mt-2">*On the map, you can click on the polygon to zoom in to the details*</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="test-set" role="tabpanel" aria-labelledby="test-tab">
+                            <div class="row justify-content-center">
+                                <div class="col-sm justify-content-center">
+                                    <p class="normal-text-small">We also collect the test set for <span class="span-highlight-text">4 classes</span>:</p>
+                                    <ul class="normal-text-small">
+                                        <li>Built-up</li>
+                                        <li>Vegetation</li>
+                                        <li>Water</li>
+                                        <li>Bare land</li>
+                                    </ul>
+                                    <p class="normal-text-small">We collect around 500 pixels of each class for testing the model and make it be spatially disjoint from training set.</p>
+                                </div>
+                                <div class="col-sm px-5">
+                                    <div class="row justify-content-center">
+                                        <div id="test-map"></div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <p class="img-caption mt-2">*On the map, you can click on the polygon to zoom in to the details*</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Classification page -->
+        <div class="main-content" id="classification-data-page">
+            <div class="container-fluid scroll-content overflow-x-auto overflow-y-auto">
+                <div class="row justify-content-center">
+                    <p class="text-center heading my-n5 my-auto">Classification</p>
+                </div>
+                <div class="row justify-content-center my-n5">
+                    <p class="text-center normal-text-small" style="margin-bottom: 2%;">To classify the land cover, we use <mark>supervised classification</mark> which are maximum likelihood (MLC) and support vector machine (SVM).</p>
+                    <div class="col-sm justify-content-center">
+                        <div class="row justify-content-center">
+                            <p class="text-center normal-text"><b>Maximum Likelihood Classification (MLC)</b></p>
+                        </div>
+                        <div class="row justify-content-center">
+                            <figure class="content-fig">
+                                <img src="images/mlc.png" id="mlc-img">
+                                <figcaption class="img-caption" style="margin-top: 10px;">
+                                    MLC (<a href="https://link.springer.com/article/10.1007/s40808-021-01258-6" target="_blank" rel="noopener noreferrer" class="src-link">source: Shakya et al., 2021</a>)
+                                </figcaption>
+                            </figure>
+                        </div>
+                        <div class="row justify-content-center">
+                            <p class="normal-text-small px-5">
+                                MLC has as assumption that the pixel values in each class is <mark>normally distributed</mark>. The pixel will be assigned to the class that has the highest probability value.
+                                From the above figure, the probability of <i><b>x</b></i>&nbsp;&nbsp;belonging to class B is higher than class A.
+                            </p>
+                            <p class="ref-text text-start mt-3 px-5" style="margin-bottom: 0;">
+                                Reference:
+                                <ul class="ref-text text-start px-5">
+                                    <li>
+                                        https://www.nv5geospatialsoftware.com/docs/MaximumLikelihood.html
+                                    </li>
+                                    <li>
+                                        https://www.redalyc.org/journal/2570/257059542002/html/
+                                    </li>
+                                    <li>
+                                        https://www.redalyc.org/journal/2570/257059542002/html/
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-sm justify-content-center">
+                        <div class="row justify-content-center">
+                            <p class="text-center normal-text"><b>Support Vector Machine (SVM)</b></p>
+                        </div>
+                        <div class="row justify-content-center">
+                            <figure class="content-fig">
+                                <img src="images/svm1.png" id="svm-img">
+                                <figcaption class="img-caption" style="margin-top: 10px;">
+                                    SVM (<a href="https://www.javatpoint.com/machine-learning-support-vector-machine-algorithm" target="_blank" rel="noopener noreferrer" class="src-link">source</a>)
+                                </figcaption>
+                            </figure>
+                        </div>
+                        <div class="row justify-content-center">
+                            <p class="normal-text-small px-5">
+                                SVM aims to find the optimal hyperplane to separate different classes and maximized the margin. 
+                                If the data is non-linearly separable, we can use kernel functions to transform the data into higher-dimensional space. The example of of kernel functions are 
+                                Linear, Polynomial, Sigmoid, and Radial Basis Function (RBF).
+                            </p>
+                            <p class="normal-text-small px-5">
+                                For our classification, we use <mark>Radial Basis Function (RBF)</mark> kernel Type.
+                            </p>
+                            <p class="ref-text text-start mt-3 px-5" style="margin-bottom: 0;">
+                                Reference:
+                                <ul class="ref-text text-start px-5">
+                                    <li>
+                                        https://www.nv5geospatialsoftware.com/docs/SupportVectorMachine.html
+                                    </li>
+                                    <li>
+                                        https://www.redalyc.org/journal/2570/257059542002/html/
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Map page -->
+        <div class="main-content" id="map-page">
+            <div class="container-fluid scroll-content overflow-x-auto overflow-y-auto">
+                <div class="row justify-content-center">
+                    <p class="text-center heading">Existing product and our product</p>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-sm">
+                        <p class="normal-text"><b>LGN 2018 product</b></p>
+                    </div>
+                    <div class="col-sm">
+                        <p class="normal-text"><b>Our classification product</b></p>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-sm" id="map1"></div>
+                    <div class="col-sm" id="map2"></div>
+                </div>
+                <div class="row justify-content-center">
+                    <p class="img-caption mt-2">
+                        We have done some additional classification product by taking different training sample sizes (~9000 pixels). The accuracy is 69.16%, but it still has less accuracy than other one. 
+                        <br>
+                        <a href="https://gisedu.itc.utwente.nl/student/s3234223/project/images/svm_9000pix.jpg" rel="noopener noreferrer" target="_blank" class="src-link">Click here to see the product</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- Accuracy assessment page -->
+        <div class="main-content" id="acc-page">
+            <div class="container-fluid scroll-content overflow-x-auto overflow-y-auto">
+                <div class="row justify-content-center">
+                    <p class="text-center heading my-auto">Accurracy assessment</p>
+                </div>
+                <div class="table-responsive-sm mx-md-5">
+                    <table class="table table-bordered normal-text-small text-center">
+                        <thead>
+                            <tr>
+                                <!-- <th scope="col">#</th> -->
+                                <th scope="col">Product</th>
+                                <th scope="col">Accuracy</th>
+                                <th scope="col">Kappa coefficient</th>
+                                <th scope="col">F1 score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <!-- <th scope="row">1</th> -->
+                                <td>SVM</td>
+                                <td>84.35%</td>
+                                <td>0.79</td>
+                                <td>84.05%</td>
+                            </tr>
+                            <tr>
+                                <!-- <th scope="row">2</th> -->
+                                <td>MLC</td>
+                                <td>75.44% </td>
+                                <td>0.67</td>
+                                <td>73.70%</td>
+                            </tr>
+                            <tr>
+                                <!-- <th scope="row">3</th> -->
+                                <!-- <td colspan="2">Larry the Bird</td> -->
+                                <td>LGN (existing product)</td>
+                                <td>73.14%</td>
+                                <td>0.64</td>
+                                <td>66.78%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-sm justify-content-center">
+                        <p class="text-center normal-text my-auto"><b>Our product: SVM classification error and accuracy</b></p>
+                        <div class="table-responsive-sm mx-md-5">
+                            <table class="table table-bordered normal-text-small" style="text-align: center;">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Class</th>
+                                        <th scope="col">Precision</th>
+                                        <th scope="col">Recall</th>
+                                        <th scope="col">Commission</th>
+                                        <th scope="col">Omission</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Built-up</td>
+                                        <td>93.84%</td>
+                                        <td>78.62%</td>
+                                        <td>6.16%</td>
+                                        <td>21.38%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vegetation</td>
+                                        <td>95.27%</td>
+                                        <td>69.46%</td>
+                                        <td>4.73%</td>
+                                        <td>30.54%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Water</td>
+                                        <td>68.61%</td>
+                                        <td>100%</td>
+                                        <td>31.39%</td>
+                                        <td>0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bare land</td>
+                                        <td>83.78%</td>
+                                        <td>94.72%</td>
+                                        <td>16.22%</td>
+                                        <td>5.28%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-sm justify-content-center">
+                        <p class="text-center normal-text my-auto"><b>Our product: MLC classification error and accuracy</b></p>
+                        <div class="table-responsive-sm mx-md-5">
+                            <table class="table table-bordered normal-text-small" style="text-align: center;">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Class</th>
+                                        <th scope="col">Precision</th>
+                                        <th scope="col">Recall</th>
+                                        <th scope="col">Commission</th>
+                                        <th scope="col">Omission</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Built-up</td>
+                                        <td>68.55%</td>
+                                        <td>89.43%</td>
+                                        <td>31.45%</td>
+                                        <td>10.57%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vegetation</td>
+                                        <td>68.11%</td>
+                                        <td>96.80%</td>
+                                        <td>31.89%</td>
+                                        <td>3.20%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Water</td>
+                                        <td>91.39%</td>
+                                        <td>50.92%</td>
+                                        <td>8.61%</td>
+                                        <td>49.08%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bare land</td>
+                                        <td>100%</td>
+                                        <td>56.03%</td>
+                                        <td>0</td>
+                                        <td>43.97%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-sm justify-content-center">
+                        <p class="text-center normal-text my-auto"><b>Existing product: Classification error and accuracy</b></p>
+                        <div class="table-responsive-sm mx-md-5">
+                            <table class="table table-bordered normal-text-small" style="text-align: center;">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Class</th>
+                                        <th scope="col">Precision</th>
+                                        <th scope="col">Recall</th>
+                                        <th scope="col">Commission</th>
+                                        <th scope="col">Omission</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Built-up</td>
+                                        <td>100%</td>
+                                        <td>100%</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vegetation</td>
+                                        <td>50.49%</td>
+                                        <td>100%</td>
+                                        <td>49.51%</td>
+                                        <td>0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Water</td>
+                                        <td>100%</td>
+                                        <td>100%</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bare land</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>100%</td>
+                                        <td>100%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <p class="img-caption">* Precision is User Accuray and Recall is Producer Accuracy</p>
+                </div>
+            </div>
+        </div>
+        <!-- Uncertainty page -->
+        <div class="main-content" id="uncertainty-page">
+            <div class="container-fluid scroll-content overflow-x-auto overflow-y-auto">
+                <div class="row justify-content-center">
+                    <p class="text-center heading">Uncertainty</p>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-sm-10">
+                        <p class="text-start normal-text" style="margin-bottom: 0;">Uncertainty in our product classification</p>
+                        <ul class="normal-text-small" style="line-height: 150%;">
+                            <li class="li-highlight mb-1">
+                                <span class="span-highlight-text">Variation of pixel values in class and between classes</span>: According to ROI separability report, some classes has low value of separability value such as Built-up area and Bare land.
+                                Moreover, standard deviation of Built-up area class in red, green, and blue band are high due to heterogeneous rooftops. These can lead to false classification.
+                            </li>
+                            <li class="li-highlight mb-1">
+                                <span class="span-highlight-text">Spectral resolution</span>: We only have RGB band in the image and some objects like water, bare land, and vegetation are hard to distinguish compared to NIR band.
+                            </li>
+                            <li class="li-highlight mb-1">
+                                <span class="span-highlight-text">Shadow Effects</span>: Shadows caused misclassification especially in SVM. However, we have tried to classify the shadows into one class to see the result as well.
+                                <a class="src-link" data-bs-toggle="modal" data-bs-target="#shadow-modal">
+                                    Click here to see more details
+                                </a>
+                            </li>
+                            <li class="li-highlight mb-1">
+                                <span class="span-highlight-text">Relief displacement in the original image</span>: There are still some relief displacement in the orthophoto that we used for classification. Relief displacement can make the classification
+                                generate mixed classes in one building.
+                            </li>
+                            <li class="li-highlight mb-1">
+                                <span class="span-highlight-text">Spatial sampling area</span>: The accuracy is more rely on where we take the test sample, but we try to be unbias in collecting the test sample.
+                            </li>
+                            <li class="li-highlight mb-1">
+                                <span class="span-highlight-text">Number of training samples</span>: Increasing training data can help improve accuracy, but it also increases the processing time especially in SVM.
+                            </li>
+                        </ul>
+                        <p class="text-start normal-text" style="margin-bottom: 0;">Uncertainty in existing product's accuracy assessment</p>
+                        <ul class="normal-text-small" style="line-height: 150%;">
+                            <li class="li-highlight mb-1">
+                                <span class="span-highlight-text">Reference Data Merging</span>: We merged different classes in existing product based on our understanding such as 
+                                classified "other rural areas” as "built-up" and "mudflats" merged into the "vegetation" class.
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="modal fade" id="shadow-modal" tabindex="-1" aria-labelledby="shadow-modal" aria-hidden="true">
+                        <div class="modal-dialog modal-fullscreen" style="width: 100%;">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="shadow">Classification by separating "shadow" to one class</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="container-fluid">
+                                        <div class="row justify-content-center">
+                                            Land cover classification by using SVM (black represents "shadow" class)
+                                        </div>
+                                        <div class="row justify-content-center mb-3">
+                                            <img src="images/svm_with_shadow.jpg" id="svm-shadow-img">
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-sm">
+                                                <div class="row justify-content-center">
+                                                    ROI mean
+                                                </div>
+                                                <div class="row justify-content-center">
+                                                    <img src="images/mean_shadow.jpg" id="roi-shadow-img">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm">
+                                                <div class="row justify-content-center">
+                                                    ROI standard deviation
+                                                </div>
+                                                <div class="row justify-content-center">
+                                                    <img src="images/stdev_shadow.jpg" id="roi-shadow-img">
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center mt-3">
+                                               <a class="text-center" target="_blank" rel="noopener noreferrer" href="https://gisedu.itc.utwente.nl/student/s3234223/project/txtfile/roi_separability_shadow.txt">Click here to see ROI separability report</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Third page -->
+        <div class="main-content" id="aboutus-page">
+            <div class="container-fluid scroll-content">
+                <div class="row justify-content-center">
+                    <p class="heading text-center"><b>About us</b></p>
+                </div>
+                <div class="row justify-content-center mb-3">
+                    <p class="normal-text">This website is created by GroupFive as part of Extraction and Dissemination of Geo-information Course.</p>
+                </div>
+                <div class="row justify-content-center">
+                    <p class="normal-text"><mark>GroupFive's members</mark>:</p>
+                    <p class="normal-text">
+                        1. Pitchaporn Likitpanjamanon<br>
+                        2. Udit Sarkar<br>
+                        3. Hamza Nadeem<br>
+                        4. Deva Geeth Manilal
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- JS CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+        <!-- Import script after body is loaded -->
+        <script src="scripts/main.js"></script>
+    </body>
+</html>

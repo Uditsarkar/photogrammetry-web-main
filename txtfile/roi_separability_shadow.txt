@@ -1,0 +1,46 @@
+Input File: ortho.tif  
+    ROI Name: (Jeffries-Matusita, Transformed Divergence)  
+  
+Built Up [Red] 3120 points:  
+    Shadows [Black] 3011 points: (1.87383122 1.91839508)  
+    Vegetation [Green] 3193 points: (1.34691294 1.55728759)  
+    Water [Blue] 3123 points: (1.86607631 1.99706047)  
+    Barren [Yellow] 3540 points: (1.54534701 1.92417708)  
+  
+Shadows [Black] 3011 points:  
+    Built Up [Red] 3120 points: (1.87383122 1.91839508)  
+    Vegetation [Green] 3193 points: (1.91175637 1.94386760)  
+    Water [Blue] 3123 points: (0.65983686 0.86917371)  
+    Barren [Yellow] 3540 points: (1.99856507 1.99999869)  
+  
+Vegetation [Green] 3193 points:  
+    Built Up [Red] 3120 points: (1.34691294 1.55728759)  
+    Shadows [Black] 3011 points: (1.91175637 1.94386760)  
+    Water [Blue] 3123 points: (1.72765994 1.81932301)  
+    Barren [Yellow] 3540 points: (1.38130890 1.86151411)  
+  
+Water [Blue] 3123 points:  
+    Built Up [Red] 3120 points: (1.86607631 1.99706047)  
+    Shadows [Black] 3011 points: (0.65983686 0.86917371)  
+    Vegetation [Green] 3193 points: (1.72765994 1.81932301)  
+    Barren [Yellow] 3540 points: (1.99706385 1.99997902)  
+  
+Barren [Yellow] 3540 points:  
+    Built Up [Red] 3120 points: (1.54534701 1.92417708)  
+    Shadows [Black] 3011 points: (1.99856507 1.99999869)  
+    Vegetation [Green] 3193 points: (1.38130890 1.86151411)  
+    Water [Blue] 3123 points: (1.99706385 1.99997902)  
+  
+Pair Separation (least to most);  
+  
+Shadows [Black] 3011 points and Water [Blue] 3123 points - 0.65983686  
+Built Up [Red] 3120 points and Vegetation [Green] 3193 points - 1.34691294  
+Vegetation [Green] 3193 points and Barren [Yellow] 3540 points - 1.38130890  
+Built Up [Red] 3120 points and Barren [Yellow] 3540 points - 1.54534701  
+Vegetation [Green] 3193 points and Water [Blue] 3123 points - 1.72765994  
+Built Up [Red] 3120 points and Water [Blue] 3123 points - 1.86607631  
+Built Up [Red] 3120 points and Shadows [Black] 3011 points - 1.87383122  
+Shadows [Black] 3011 points and Vegetation [Green] 3193 points - 1.91175637  
+Water [Blue] 3123 points and Barren [Yellow] 3540 points - 1.99706385  
+Shadows [Black] 3011 points and Barren [Yellow] 3540 points - 1.99856507  
+

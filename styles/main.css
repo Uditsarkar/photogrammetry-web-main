@@ -1,0 +1,376 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: black;
+    font-family: Poppins;
+}
+
+p {
+    margin-bottom: 1.5rem;
+}
+
+mark {
+    background-color: #ffc164;
+    color: black;
+}
+
+figure {
+    display: inline-block;
+    text-align: center;
+}
+
+.modal-backdrop {
+    display: none;    
+}
+
+/* nav customization */
+.custom-nav {
+    background-color: #e6bfaa;
+    /* top, right, bottom, left */
+    padding: 10px 5px 10px 5px;
+}
+ 
+/*.nav-item .nav-link  {
+    color: #a44a3f;
+}
+
+.nav-item:hover .nav-link {
+    color: #772e25;
+}*/
+
+/*.nav-underline .nav-link.active {
+    color: currentColor;
+} */
+
+a {
+    cursor: pointer;
+}
+
+a.src-link, a.src-link:link, a.src-link:visited {
+    color: #6bb8ff;
+}
+
+a.src-link:hover {
+    color: #379cfa;
+}
+
+a.src-link:link:active, a.src-link:visited:active {
+    color: #379cfa;
+}
+
+#webtitle {
+    padding-left: 5px;
+}
+
+/* body customization */
+.main-content {
+    display: flex;
+    /*This means that if you are using flex-direction: column, the main axis will be y-axis (so justify-content: center will actually center elements vertically while align-item: center will do the job for horizontal align).*/
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /* height: calc(100vh - 80px); */
+    height: 100svh;
+}
+
+.normal-text {
+    color: white; 
+    text-align: center;
+    font-size: calc(1em + 0.5vw);
+    text-justify: inter-word;
+}
+
+.normal-text-small {
+    color: white; 
+    text-align: left;
+    font-size: calc(0.7em + 0.5vw);
+    margin: 10px 10px 10px 10px;
+    text-justify: inter-word;
+}
+
+.img-caption {
+    color: white; 
+    text-align: center;
+    font-size: calc(0.5em + 0.5vw);
+}
+
+.ref-text {
+    color: white; 
+    text-align: center;
+    font-size: calc(0.2em + 0.5vw);
+}
+
+.heading-home {
+    /* dynamic font size based on viewport size (need to check more) */
+    font-size: calc(1.5em + 2vw);
+    color: white;
+}
+
+.heading {
+    /* dynamic font size based on viewport size (need to check more) */
+    font-size: calc(1em + 2vw);
+    color: white;
+}
+
+.table > thead {
+    background-color: #ffc164;
+    color: black;
+}
+
+.vl {
+    border-left: 2px solid #ddd; /* Adjust color and width as needed */
+    height: 45svh; /* Set height to 50% viewport height for responsiveness */
+    position: absolute; /* Position the line on the page */
+    left: 50%; /* Center the line horizontally */
+    transform: translateX(-50%); /* Offset the line to compensate for half border width */
+}
+
+.logo-img {
+    width: 70%; /* Scales the image to fit container width */
+    height: auto; /* Maintains image aspect ratio */
+    max-width: 90px; /* Optional: Set a maximum width to prevent excessive scaling */
+    margin: 10px 10px 10px 10px;
+}
+
+li.li-highlight {
+    margin-bottom: 2%;
+}
+
+.span-highlight-text {
+    color: #ffc164;
+}
+
+#first-page {
+    background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('../images/ortho_svm.jpg');
+}
+
+figure.content-fig {
+    margin-bottom: 0;
+    margin: auto;
+}
+
+#mlc-img {
+    width: 50%;
+    height: 70%;
+    /* margin: 10px 10px 10px 10px; */
+    align-items: center;
+    object-fit: cover;
+}
+
+#svm-img {
+    width: 50%;
+    height: 50%;
+    /* margin: 10px 10px 10px 10px; */
+    align-items: center;
+    background-color: white;
+    object-fit: cover;
+}
+
+figure.workflow-fig {
+    background-position: 50% 50%;
+    position: relative;
+    width: 40svw;
+    overflow: hidden;
+    cursor: zoom-in;
+    background-repeat: no-repeat;
+}
+
+#workflow-img:hover {
+    opacity: 0;
+}
+
+#workflow-img {
+    /* width: 40svw;  */
+    height: 70svh; 
+    align-items: center;
+    transition: opacity .5s;
+    display: block;
+    width: 100%;
+}
+
+#img1 {
+    width: 90px;
+    height: 90px;
+    margin: 10px 10px 10px 10px;
+    align-items: center;
+}
+
+#web-arch-img {
+    width: 80%;
+    height: 100%;
+}
+
+#roi-shadow-img {
+    width: 60%;
+    height: 100%;
+    /* margin: 10px 10px 10px 10px; */
+    align-items: center;
+    object-fit: cover;
+}
+
+#svm-shadow-img {
+    width: 50%;
+    height: 70%;
+    /* margin: 10px 10px 10px 10px; */
+    align-items: center;
+    object-fit: cover;
+}
+
+#train-map {
+    padding-top: 5%;
+    height: 60svh;
+}
+
+#test-map {
+    padding-top: 5%;
+    height: 60svh;
+}
+
+#map1 {
+    height: 60svh;
+}
+
+#map2 {
+    height: 60svh;
+}
+
+.btn-rectangle {
+    width: 80%;
+    height: 8svh;
+    margin: 10px 10px 10px 30px;
+    /* line-height: 90px; */
+    /* border-radius: 20%; */
+    font-size: 1.3rem;
+    color: #000;
+    text-align: center;
+    background: #28ff71;
+    display: flex;
+    align-items: center; /* Vertical center alignment */
+    justify-content: center;
+}
+
+.btn-rectangle:hover {
+    width: 80%;
+    height: 8svh;
+    margin: 10px 10px 10px 30px;
+    /* line-height: 90px; */
+    /* border-radius: 20%; */
+    font-size: 1.3rem;
+    color: #000;
+    text-align: center;
+    background: #05fd58;
+    display: flex;
+    align-items: center; /* Vertical center alignment */
+    justify-content: center;
+}
+
+.btn-rectangle:focus {
+    width: 80%;
+    height: 8svh;
+    margin: 10px 10px 10px 30px;
+    /* line-height: 90px; */
+    /* border-radius: 20%; */
+    font-size: 1.3rem;
+    color: #000;
+    text-align: center;
+    background: #05fd58;
+    display: flex;
+    align-items: center; /* Vertical center alignment */
+    justify-content: center;
+}
+
+.btn-rectangle:active {
+    width: 80%;
+    height: 8svh;
+    margin: 10px 10px 10px 30px;
+    /* line-height: 90px; */
+    /* border-radius: 20%; */
+    font-size: 1.3rem;
+    color: #000;
+    text-align: center;
+    background: #05fd58;
+    display: flex;
+    align-items: center; /* Vertical center alignment */
+    justify-content: center;
+}
+
+.btn-rectangle:hover:focus:active {
+    width: 80%;
+    height: 8svh;
+    margin: 10px 10px 10px 30px;
+    font-size: 1.3rem;
+    color: #000;
+    text-align: center;
+    background: #05fd58;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* animation */
+.scroll-content {
+    scale: .8;
+    opacity: 0;
+    animation: fade-in linear forwards;
+    animation-timeline: view();
+    animation-range: cover 5% contain 10%;
+}
+
+@keyframes fade-in {
+    from {
+        scale: .8; 
+        opacity: 0;
+    }
+    to {
+        scale: 1; 
+        opacity: 1;
+    }
+}
+
+.scroll {
+	width: 40px;
+	height: 40px;
+	border: 2px solid white;
+	border-radius: 50%;
+	position: relative;
+	animation: down 1.5s infinite;
+	
+}
+
+.scroll::before {
+    content: '';
+    position: absolute;
+    top: 9px;
+    left: 12px;
+    width: 12px;
+    height: 12px;
+    border-left: 2px solid white;
+    border-bottom: 2px solid white;
+    transform: rotate(-45deg);
+}
+
+@keyframes down {
+	0% {
+		transform: translate(0);
+	}
+	20% {
+		transform: translateY(15px);
+	}
+	40% {
+		transform: translate(0);
+	}
+}
+
+@-webkit-keyframes down {
+	0% {
+		transform: translate(0);
+	}
+	20% {
+		transform: translateY(15px);
+	}
+	40% {
+		transform: translate(0);
+	}
+}

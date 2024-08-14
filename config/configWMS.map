@@ -1,0 +1,138 @@
+MAP
+    NAME "Enschede"
+    IMAGECOLOR 255 255 255
+    SIZE 600 800
+    IMAGETYPE PNG24
+    PROJECTION
+        "init=epsg:28992" #latlon on EPSG:28992
+    END
+    EXTENT 256629.9015000000072177 470713.1186999999918044 258005.3205000000016298 471880.4474000000045635
+    WEB
+        METADATA
+            #request that can be enabled -> GetCapabilities, GetMap, GetFeatureInfo and GetLegendGraphic
+            "ows_enable_request" "*"
+            "map" "d:/iishome/student/s3234223/project/config/configWMS.map"
+            "ows_schemas_location" "http://schemas.opengeospatial.net"
+            "ows_title" "EnschedeWMS"
+            "ows_onlineresource" "https://gisedu.itc.utwente.nl/cgi-bin/mapserv.exe?map=d:/iishome/student/s3234223/project/config/configWMS.map&"
+            "ows_srs" "EPSG:4326 EPSG:3857 EPSG:28992" #latlon
+            "wms_feature_info_mime_type" "text/plain"
+            "wms_feature_info_mime_type" "text/html"
+            "wms_server_version" "1.3.0"
+            "wms_formatlist" "image/png,image/jpeg"
+            "wms_format" "image/png"
+        END #web metadata
+    END #web
+    #define font list
+    FONTSET "fonts/fonts.list"
+    LEGEND
+        KEYSIZE 16 12
+        LABEL
+            COLOR 0 0 0
+            TYPE TRUETYPE
+            FONT "arial"
+            SIZE 10
+        END
+        STATUS ON
+        POSITION LR
+    END
+    LAYER
+        NAME "lgn2018_raster"
+        TYPE RASTER
+        STATUS ON
+        DATA "lgn_4class_img.tif"
+        METADATA
+            "ows_title" "lgn2018_classification_raster"
+            "ows_extent" "256583.2000000000116415 470627.5999999999767169 258097.1000000000058208 471960.2999999999883585"
+        END
+        PROJECTION
+            "init=epsg:28992"
+        END
+        #legend
+        CLASS
+            NAME "Built-up Area"
+            COLOR 254 0 0
+        END
+        CLASS
+            NAME "Vegetation"
+            COLOR 0 254 0
+        END
+        CLASS
+            NAME "Water"
+            COLOR 0 0 254
+        END
+    END
+    LAYER
+        NAME "svm_raster"
+        TYPE RASTER
+        STATUS ON
+        DATA "ortho_svm_georef.tif"
+        METADATA
+            "ows_title" "svm_classification_raster"
+            "ows_extent" "256583.2000000000116415 470627.5999999999767169 258097.1000000000058208 471960.2999999999883585"
+        END
+        PROJECTION
+            "init=epsg:28992"
+        END
+        #legend
+        CLASS
+            NAME "Built-up Area"
+            COLOR 254 0 0
+        END
+        CLASS
+            NAME "Vegetation"
+            COLOR 0 254 0
+        END
+        CLASS
+            NAME "Water"
+            COLOR 0 0 254
+        END
+        CLASS
+            NAME "Bareland"
+            COLOR 254 254 0
+        END
+    END
+    LAYER
+        NAME "mlc_raster"
+        TYPE RASTER
+        STATUS ON
+        DATA "ortho_maxlikelihood_georef.tif"
+        METADATA
+            "ows_title" "mlc_classification_raster"
+            "ows_extent" "256583.2000000000116415 470627.5999999999767169 258097.1000000000058208 471960.2999999999883585"
+        END
+        PROJECTION
+            "init=epsg:28992"
+        END
+        #legend
+        CLASS
+            NAME "Built-up Area"
+            COLOR 254 0 0
+        END
+        CLASS
+            NAME "Vegetation"
+            COLOR 0 254 0
+        END
+        CLASS
+            NAME "Water"
+            COLOR 0 0 254
+        END
+        CLASS
+            NAME "Bareland"
+            COLOR 254 254 0
+        END
+    END
+    LAYER
+        NAME "original_raster"
+        TYPE RASTER
+        STATUS ON
+        DATA "original_ortho.tif"
+        METADATA
+            "ows_title" "original_raster"
+            "ows_extent" "256583.2000000000116415 470627.5999999999767169 258097.1000000000058208 471960.2999999999883585"
+        END
+        PROJECTION
+            "init=epsg:28992"
+        END
+    END
+END #map
